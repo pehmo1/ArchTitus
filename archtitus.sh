@@ -4,6 +4,9 @@
 # @file ArchTitus
 # @brief Entrance script that launches children scripts for each phase of installation.
 
+# Remount live system to have room to write logs etc.
+mount -o remount,size=2G /run/archiso/cowspace
+
 # Find the name of the folder the scripts are in
 set -a
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"

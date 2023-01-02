@@ -225,7 +225,7 @@ esac
 # @description Detects and sets timezone. 
 timezone () {
 # Added this from arch wiki https://wiki.archlinux.org/title/System_time
-time_zone="$(curl --fail https://ipapi.co/timezone)"
+time_zone="$(curl --silent --fail https://ipapi.co/timezone)"
 echo -ne "
 System detected your timezone to be '$time_zone' \n"
 echo -ne "Is this correct?
@@ -244,19 +244,6 @@ case ${options[$?]} in
     set_option TIMEZONE $new_timezone;;
     *) echo "Wrong option. Try again";timezone;;
 esac
-}
-# @description Set user's keyboard mapping. 
-keymap () {
-echo -ne "
-Please select key board layout from this list"
-# These are default key maps as presented in official arch repo archinstall
-options=(us by ca cf cz de dk es et fa fi fr gr hu il it lt lv mk nl no pl ro ru sg ua uk)
-
-select_option $? 4 "${options[@]}"
-keymap=${options[$?]}
-
-echo -ne "Your key boards layout: ${keymap} \n"
-set_option KEYMAP $keymap
 }
 
 # @description Choose whether drive is SSD or not.
@@ -310,37 +297,6 @@ read -rep "Please enter your hostname: " nameofmachine
 set_option NAME_OF_MACHINE $nameofmachine
 }
 
-# @description Choose AUR helper. 
-aurhelper () {
-  # Let the user choose AUR helper from predefined list
-  echo -ne "Please enter your desired AUR helper:\n"
-  options=(paru yay picaur aura trizen pacaur none)
-  select_option $? 4 "${options[@]}"
-  aur_helper=${options[$?]}
-  set_option AUR_HELPER $aur_helper
-}
-
-# @description Choose Desktop Environment
-desktopenv () {
-  # Let the user choose Desktop Enviroment from predefined list
-  echo -ne "Please select your desired Desktop Enviroment:\n"
-  options=( `for f in pkg-files/*.txt; do echo "$f" | sed -r "s/.+\/(.+)\..+/\1/;/pkgs/d"; done` )
-  select_option $? 4 "${options[@]}"
-  desktop_env=${options[$?]}
-  set_option DESKTOP_ENV $desktop_env
-}
-
-# @description Choose whether to do full or minimal installation. 
-installtype () {
-  echo -ne "Please select type of installation:\n\n
-  Full install: Installs full featured desktop enviroment, with added apps and themes needed for everyday use\n
-  Minimal Install: Installs only apps few selected apps to get you started\n"
-  options=(FULL MINIMAL)
-  select_option $? 4 "${options[@]}"
-  install_type=${options[$?]}
-  set_option INSTALL_TYPE $install_type
-}
-
 # More features in future
 # language (){}
 
@@ -351,20 +307,6 @@ logo
 userinfo
 clear
 logo
-desktopenv
-# Set fixed options that installation uses if user choses server installation
-set_option INSTALL_TYPE MINIMAL
-set_option AUR_HELPER NONE
-if [[ ! $desktop_env == server ]]; then
-  clear
-  logo
-  aurhelper
-  clear
-  logo
-  installtype
-fi
-clear
-logo
 diskpart
 clear
 logo
@@ -372,6 +314,3 @@ filesystem
 clear
 logo
 timezone
-clear
-logo
-keymap

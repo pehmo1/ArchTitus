@@ -59,34 +59,6 @@ echo -ne "
                Enabling (and Theming) Login Display Manager
 -------------------------------------------------------------------------
 "
-if [[ ${DESKTOP_ENV} == "kde" ]]; then
-  systemctl enable sddm.service
-  if [[ ${INSTALL_TYPE} == "FULL" ]]; then
-    echo [Theme] >>  /etc/sddm.conf
-    echo Current=Nordic >> /etc/sddm.conf
-  fi
-
-elif [[ "${DESKTOP_ENV}" == "gnome" ]]; then
-  systemctl enable gdm.service
-
-elif [[ "${DESKTOP_ENV}" == "lxde" ]]; then
-  systemctl enable lxdm.service
-
-elif [[ "${DESKTOP_ENV}" == "openbox" ]]; then
-  systemctl enable lightdm.service
-  if [[ "${INSTALL_TYPE}" == "FULL" ]]; then
-    # Set default lightdm-webkit2-greeter theme to Litarvan
-    sed -i 's/^webkit_theme\s*=\s*\(.*\)/webkit_theme = litarvan #\1/g' /etc/lightdm/lightdm-webkit2-greeter.conf
-    # Set default lightdm greeter to lightdm-webkit2-greeter
-    sed -i 's/#greeter-session=example.*/greeter-session=lightdm-webkit2-greeter/g' /etc/lightdm/lightdm.conf
-  fi
-
-else
-  if [[ ! "${DESKTOP_ENV}" == "server"  ]]; then
-  sudo pacman -S --noconfirm --needed lightdm lightdm-gtk-greeter
-  systemctl enable lightdm.service
-  fi
-fi
 
 echo -ne "
 -------------------------------------------------------------------------
@@ -94,20 +66,13 @@ echo -ne "
 -------------------------------------------------------------------------
 "
 systemctl enable cups.service
-echo "  Cups enabled"
 ntpd -qg
 systemctl enable ntpd.service
-echo "  NTP enabled"
 systemctl disable dhcpcd.service
-echo "  DHCP disabled"
 systemctl stop dhcpcd.service
-echo "  DHCP stopped"
 systemctl enable NetworkManager.service
-echo "  NetworkManager enabled"
 systemctl enable bluetooth
-echo "  Bluetooth enabled"
 systemctl enable avahi-daemon.service
-echo "  Avahi enabled"
 
 if [[ "${FS}" == "luks" || "${FS}" == "btrfs" ]]; then
 echo -ne "
@@ -159,6 +124,8 @@ sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 
 rm -r $HOME/ArchTitus
 rm -r /home/$USERNAME/ArchTitus
+
+chown -R $USERNAME:$USERNAME /home/$USERNAME
 
 # Replace in the same state
 cd $pwd

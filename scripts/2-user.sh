@@ -16,63 +16,39 @@ echo -ne "
                          Automated Arch Linux Installer
 --------------------------------------------------------------------------------
 
-Installing AUR Softwares
+Installing packages and config
 "
 source $HOME/ArchTitus/configs/setup.conf
 
-  cd ~
-  mkdir "/home/$USERNAME/.cache"
-  touch "/home/$USERNAME/.cache/zshhistory"
-  git clone "https://github.com/ChrisTitusTech/zsh"
-  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
-  ln -s "~/zsh/.zshrc" ~/.zshrc
+# Install yay
+git clone https://aur.archlinux.org/yay.git /home/$USERNAME/yay
+cd /home/$USERNAME/yay
+makepkg --noconfirm --needed -si
+cd
+rm -rf /home/$USERNAME/yay
 
-sed -n '/'$INSTALL_TYPE'/q;p' ~/ArchTitus/pkg-files/${DESKTOP_ENV}.txt | while read line
-do
-  if [[ ${line} == '--END OF MINIMAL INSTALL--' ]]
-  then
-    # If selected installation type is FULL, skip the --END OF THE MINIMAL INSTALLATION-- line
-    continue
-  fi
-  echo "INSTALLING: ${line}"
-  sudo pacman -S --noconfirm --needed ${line}
-done
+# Install packages
+yay -S --noconfirm --needed - < $HOME/ArchTitus/pkgs.txt
 
+# Install ohmyzsh and it's themes / plugins
+sh -c "CHSH=no RUNZSH=no KEEP_ZSHRC=yes $(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
-if [[ ! $AUR_HELPER == none ]]; then
-  cd ~
-  git clone "https://aur.archlinux.org/$AUR_HELPER.git"
-  cd ~/$AUR_HELPER
-  makepkg -si --noconfirm
-  # sed $INSTALL_TYPE is using install type to check for MINIMAL installation, if it's true, stop
-  # stop the script and move on, not installing any more packages below that line
-  sed -n '/'$INSTALL_TYPE'/q;p' ~/ArchTitus/pkg-files/aur-pkgs.txt | while read line
-  do
-    if [[ ${line} == '--END OF MINIMAL INSTALL--' ]]; then
-      # If selected installation type is FULL, skip the --END OF THE MINIMAL INSTALLATION-- line
-      continue
-    fi
-    echo "INSTALLING: ${line}"
-    $AUR_HELPER -S --noconfirm --needed ${line}
-  done
-fi
+# dwm and dmenu
+mkdir -p /home/$USERNAME/Downloads/packages/
+git clone https://github.com/pehmo1/dwm.git /home/$USERNAME/Downloads/dwm
+git clone https://github.com/pehmo1/dmenu.git /home/$USERNAME/Downloads/dmenu
+cd /home/$USERNAME/Downloads/dwm
+sudo make clean install
+cd /home/$USERNAME/Downloads/dmenu
+sudo make clean install
+
+# configs
+git clone https://github.com/pehmo1/config.git /home/$USERNAME/Downloads/config
+/home/$USERNAME/Downloads/config/paste.sh
 
 export PATH=$PATH:~/.local/bin
-
-# Theming DE if user chose FULL installation
-if [[ $INSTALL_TYPE == "FULL" ]]; then
-  if [[ $DESKTOP_ENV == "kde" ]]; then
-    cp -r ~/ArchTitus/configs/.config/* ~/.config/
-    pip install konsave
-    konsave -i ~/ArchTitus/configs/kde.knsv
-    sleep 1
-    konsave -a kde
-  elif [[ $DESKTOP_ENV == "openbox" ]]; then
-    cd ~
-    git clone https://github.com/stojshic/dotfiles-openbox
-    ./dotfiles-openbox/install-titus.sh
-  fi
-fi
 
 echo -ne "
 -------------------------------------------------------------------------

@@ -17,21 +17,8 @@ echo -ne "
 --------------------------------------------------------------------------------
 "
 source $HOME/ArchTitus/configs/setup.conf
-echo -ne "
--------------------------------------------------------------------------
-                    Network Setup 
--------------------------------------------------------------------------
-"
-pacman -S --noconfirm --needed networkmanager dhclient
-systemctl enable --now NetworkManager
-echo -ne "
--------------------------------------------------------------------------
-                    Setting up mirrors for optimal download 
--------------------------------------------------------------------------
-"
-pacman -S --noconfirm --needed pacman-contrib curl
-pacman -S --noconfirm --needed reflector rsync grub arch-install-scripts git
-cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+pacman -S --noconfirm --needed networkmanager dhclient pacman-contrib curl reflector rsync grub arch-install-scripts git
 
 nc=$(grep -c ^processor /proc/cpuinfo)
 echo -ne "
@@ -51,14 +38,13 @@ echo -ne "
                     Setup Language to US and set locale  
 -------------------------------------------------------------------------
 "
+ln -s /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+hwclock --systohc
+
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
-timedatectl --no-ask-password set-timezone ${TIMEZONE}
-timedatectl --no-ask-password set-ntp 1
-localectl --no-ask-password set-locale LANG="en_US.UTF-8" LC_TIME="en_US.UTF-8"
-ln -s /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
-# Set keymaps
-localectl --no-ask-password set-keymap ${KEYMAP}
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+
 
 # Add sudo no password rights
 sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
@@ -71,24 +57,6 @@ sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 pacman -Sy --noconfirm --needed
 
-echo -ne "
--------------------------------------------------------------------------
-                    Installing Base System  
--------------------------------------------------------------------------
-"
-# sed $INSTALL_TYPE is using install type to check for MINIMAL installation, if it's true, stop
-# stop the script and move on, not installing any more packages below that line
-if [[ ! $DESKTOP_ENV == server ]]; then
-  sed -n '/'$INSTALL_TYPE'/q;p' $HOME/ArchTitus/pkg-files/pacman-pkgs.txt | while read line
-  do
-    if [[ ${line} == '--END OF MINIMAL INSTALL--' ]]; then
-      # If selected installation type is FULL, skip the --END OF THE MINIMAL INSTALLATION-- line
-      continue
-    fi
-    echo "INSTALLING: ${line}"
-    sudo pacman -S --noconfirm --needed ${line}
-  done
-fi
 echo -ne "
 -------------------------------------------------------------------------
                     Installing Microcode
@@ -170,8 +138,8 @@ echo -ne "
 "
 if [ $(whoami) = "root"  ]; then
     groupadd libvirt
-    useradd -m -G wheel,libvirt -s /bin/bash $USERNAME 
-    echo "$USERNAME created, home directory created, added to wheel and libvirt group, default shell set to /bin/bash"
+    useradd -m -G wheel,libvirt -s /bin/zsh $USERNAME 
+    echo "$USERNAME created, home directory created, added to wheel and libvirt group, default shell set to /bin/zsh"
 
 # use chpasswd to enter $USERNAME:$password
     echo "$USERNAME:$PASSWORD" | chpasswd

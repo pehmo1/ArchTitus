@@ -208,17 +208,15 @@ filesystem () {
 echo -ne "
 Please Select your file system for both boot and root
 "
-options=("btrfs" "ext4" "luks" "exit")
+options=("ext4" "luks")
 select_option $? 1 "${options[@]}"
 
 case $? in
-0) set_option FS btrfs;;
-1) set_option FS ext4;;
-2) 
+0) set_option FS ext4;;
+1) 
     set_password "LUKS_PASSWORD"
     set_option FS luks
     ;;
-3) exit ;;
 *) echo "Wrong option please select again"; filesystem;;
 esac
 }

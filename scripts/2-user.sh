@@ -34,6 +34,7 @@ yay -S --noconfirm --needed - < $HOME/ArchTitus/pkgs.txt
 sh -c "CHSH=no RUNZSH=no KEEP_ZSHRC=yes $(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
 # dwm and dmenu
 mkdir -p /home/$USERNAME/Downloads/packages/
@@ -49,6 +50,14 @@ git clone https://github.com/pehmo1/config.git /home/$USERNAME/Downloads/config
 /home/$USERNAME/Downloads/config/paste.sh
 
 export PATH=$PATH:~/.local/bin
+
+# pip installs
+pip install pillow
+
+# configure git
+git config --global user.name "pehmo1"
+git config --global user.email ""
+git config --global credential.helper store
 
 echo -ne "
 -------------------------------------------------------------------------

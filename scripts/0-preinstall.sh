@@ -52,7 +52,7 @@ sgdisk -a 2048 -o ${DISK} # new gpt disk 2048 alignment
 sgdisk -n 1::+1M --typecode=1:ef02 --change-name=1:'BIOSBOOT' ${DISK} # partition 1 (BIOS Boot Partition)
 sgdisk -n 2::+300M --typecode=2:ef00 --change-name=2:'EFIBOOT' ${DISK} # partition 2 (UEFI Boot Partition)
 sgdisk -n 3::-0 --typecode=3:8300 --change-name=3:'ROOT' ${DISK} # partition 3 (Root), default start, remaining
-if [[ ! -d "/sys/firmware/efi" ]]; then # Checking for bios system
+if [[ "${BOOTMODE}" == "bios" ]]; then # Checking for bios system
     sgdisk -A 1:set:2 ${DISK}
 fi
 partprobe ${DISK} # reread partition table to ensure it is correct
@@ -103,7 +103,10 @@ echo -ne "
                     Arch Install on Main Drive
 -------------------------------------------------------------------------
 "
-pacstrap /mnt base base-devel linux linux-firmware vim sudo archlinux-keyring wget libnewt --noconfirm --needed
+pacstrap /mnt base base-devel linux linux-firmware vim sudo archlinux-keyring wget libnewt grub --noconfirm --needed
+if [[ "${BOOTMODE}" == "uefi" ]]; then
+    pacstrap /mnt efibootmgr --noconfirm --needed
+fi
 echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 cp -R ${SCRIPT_DIR} /mnt/root/ArchTitus
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
@@ -113,16 +116,6 @@ echo "
   Generated /etc/fstab:
 "
 cat /mnt/etc/fstab
-echo -ne "
--------------------------------------------------------------------------
-                    GRUB BIOS Bootloader Install & Check
--------------------------------------------------------------------------
-"
-if [[ ! -d "/sys/firmware/efi" ]]; then
-    grub-install --boot-directory=/mnt/boot ${DISK}
-else
-    pacstrap /mnt efibootmgr --noconfirm --needed
-fi
 echo -ne "
 -------------------------------------------------------------------------
                     Checking for low memory systems <8G

@@ -295,6 +295,20 @@ read -rep "Please enter your hostname: " nameofmachine
 set_option NAME_OF_MACHINE $nameofmachine
 }
 
+bootmode () {
+echo -ne "
+Select the boot mode
+"
+options=("UEFI" "BIOS")
+select_option $? 1 "${options[@]}"
+
+case $? in
+0) set_option BOOTMODE uefi;;
+1) set_option BOOTMODE bios;;
+*) echo "Wrong option please select again"; bootmode;;
+esac
+}
+
 # More features in future
 # language (){}
 
@@ -303,6 +317,9 @@ background_checks
 clear
 logo
 userinfo
+clear
+logo
+bootmode
 clear
 logo
 diskpart

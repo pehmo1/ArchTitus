@@ -2,13 +2,11 @@
 # Remount live system to have room to write logs etc.
 mount -o remount,size=2G /run/archiso/cowspace
 
-# Make config directory if doesn't exist
-mkdir /configs &>/dev/null # Hiding error message if any
-
 # Find the name of the folder the scripts are in
 set -a
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 SCRIPTS_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"/scripts
+mkdir $SCRIPT_DIR/configs &>/dev/null # Hiding error message if any
 CONFIGS_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"/configs
 set +a
 echo -ne "

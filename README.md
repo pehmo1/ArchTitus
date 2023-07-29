@@ -5,7 +5,12 @@ This is an automated installer that installs Arch Linux with my config.
 ### Option 1:
 Download the official [Arch Linux ISO file](https://archlinux.org/download) and burn it to a USB drive with [Rufus](https://rufus.ie/en/) on Windows or "dd" command on Linux.
 
-Boot from the USB, get a network connection (Ethernet works by itself, "iwctl" command for WiFi), and type in the following commands:
+Boot from the USB, get a network connection. Ethernet works by itself, for wifi run:
+```
+iwctl
+station wlan connect <WIFI NAME>
+```
+Then type in the following commands:
 
 ```
 mount -o remount,size=2G /run/archiso/cowspace

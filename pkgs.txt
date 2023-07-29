@@ -26,7 +26,6 @@ file
 findutils
 firefox-developer-edition
 flex
-freetube-bin
 gawk
 gcc
 gettext
@@ -108,7 +107,6 @@ virtualbox-host-modules-arch
 visual-studio-code-bin
 wget
 which
-wireplumber
 xdotool
 xorg-bdftopcf
 xorg-docs

@@ -53,7 +53,7 @@ pip install pillow
 
 # configure git
 git config --global user.name "pehmo1"
-git config --global user.email ""
+git config --global user.email "<>"
 git config --global credential.helper store
 
 echo -ne "

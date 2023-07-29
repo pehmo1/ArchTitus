@@ -13,8 +13,6 @@ station wlan0 connect <WIFI NAME>
 Then type in the following commands:
 
 ```
-pacman-key --init
-pacman-key --populate archlinux
 pacman -Sy --noconfirm git
 git clone https://github.com/pehmo1/ArchTitus.git
 ./ArchTitus/archtitus.sh

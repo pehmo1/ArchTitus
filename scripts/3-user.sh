@@ -36,12 +36,9 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$
 git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
-# dwm and dmenu
+# dmenu
 mkdir -p /home/$USERNAME/Downloads/packages/
-git clone https://github.com/pehmo1/dwm.git /home/$USERNAME/Downloads/dwm
 git clone https://github.com/pehmo1/dmenu.git /home/$USERNAME/Downloads/dmenu
-cd /home/$USERNAME/Downloads/dwm
-sudo make clean install
 cd /home/$USERNAME/Downloads/dmenu
 sudo make clean install
 

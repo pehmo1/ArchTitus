@@ -22,12 +22,12 @@ echo -ne "
                          Automated Arch Linux Installer
 --------------------------------------------------------------------------------
 "
-    ( bash $SCRIPT_DIR/scripts/startup.sh )|& tee startup.log
+    ( bash $SCRIPT_DIR/scripts/0-startup.sh )|& tee 0-startup.log
       source $CONFIGS_DIR/setup.conf
-    ( bash $SCRIPT_DIR/scripts/0-preinstall.sh )|& tee 0-preinstall.log
-    ( arch-chroot /mnt $HOME/ArchTitus/scripts/1-setup.sh )|& tee 1-setup.log
-    ( arch-chroot /mnt /usr/bin/runuser -u $USERNAME -- /home/$USERNAME/ArchTitus/scripts/2-user.sh )|& tee 2-user.log
-    ( arch-chroot /mnt $HOME/ArchTitus/scripts/3-post-setup.sh )|& tee 3-post-setup.log
+    ( bash $SCRIPT_DIR/scripts/1-preinstall.sh )|& tee 1-preinstall.log
+    ( arch-chroot /mnt $HOME/ArchTitus/scripts/2-setup.sh )|& tee 2-setup.log
+    ( arch-chroot /mnt /usr/bin/runuser -u $USERNAME -- /home/$USERNAME/ArchTitus/scripts/3-user.sh )|& tee 3-user.log
+    ( arch-chroot /mnt $HOME/ArchTitus/scripts/4-post-setup.sh )|& tee 4-post-setup.log
     cp -v *.log /mnt/home/$USERNAME
 
 echo -ne "

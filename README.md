@@ -13,10 +13,8 @@ station wlan connect <WIFI NAME>
 Then type in the following commands:
 
 ```
-mount -o remount,size=2G /run/archiso/cowspace
 pacman-key --init
 pacman-key --populate archlinux
-pacman -Syu --noconfirm
 pacman -Sy --noconfirm git
 git clone https://github.com/pehmo1/ArchTitus.git
 ./ArchTitus/archtitus.sh

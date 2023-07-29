@@ -3,7 +3,7 @@
 mount -o remount,size=2G /run/archiso/cowspace
 
 # Make config directory if doesn't exist
-mkdir /mnt &>/dev/null # Hiding error message if any
+mkdir /configs &>/dev/null # Hiding error message if any
 
 # Find the name of the folder the scripts are in
 set -a

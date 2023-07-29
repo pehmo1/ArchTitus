@@ -8,7 +8,7 @@ Download the official [Arch Linux ISO file](https://archlinux.org/download) and 
 Boot from the USB, get a network connection. Ethernet works by itself, for wifi run:
 ```
 iwctl
-station wlan connect <WIFI NAME>
+station wlan0 connect <WIFI NAME>
 ```
 Then type in the following commands:
 

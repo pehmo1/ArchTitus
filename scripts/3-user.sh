@@ -28,7 +28,9 @@ cd
 rm -rf /home/$USERNAME/yay
 
 # Install packages
-yay -S --noconfirm --needed - < $HOME/ArchTitus/pkgs.txt
+git clone https://github.com/pehmo1/config.git /home/$USERNAME/config
+yay -S --noconfirm --needed - < /home/$USERNAME/config/packages.txt
+rm -rf /home/$USERNAME/config
 
 # Install ohmyzsh and it's themes / plugins
 sh -c "CHSH=no RUNZSH=no KEEP_ZSHRC=yes $(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"

@@ -2,7 +2,6 @@ This is an automated installer that installs Arch Linux with my config.
 
 ## How to use
 
-### Option 1:
 Download the official [Arch Linux ISO file](https://archlinux.org/download) and burn it to a USB drive with [Rufus](https://rufus.ie/en/) on Windows or "dd" command on Linux.
 
 Boot from the USB, get a network connection. Ethernet works by itself, for wifi use [iwctl](https://wiki.archlinux.org/title/Iwd).

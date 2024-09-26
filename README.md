@@ -15,4 +15,6 @@ git clone https://github.com/pehmo1/ArchTitus.git
 ```
 
 ### After install
+Run :PlugInstall in neovim
+
 Set up / log in to programs
